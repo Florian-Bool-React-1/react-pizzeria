@@ -11,7 +11,11 @@ export default function TheFooter() {
       <div className="container mx-auto px-4 pb-12 flex">
 
         <div className="bg-white py-12 rounded-lg text-center w-1/3">
-          <img src="logo.jpg" alt="" className="inline-block" />
+          <img src="logo.jpg" alt="" className="inline-block mb-4" />
+
+          <div className="italic text-base">
+            Se non ci vieni sei ignurante!
+          </div>
         </div>
 
         <div className="w-1/3 px-4 lg:px-10">

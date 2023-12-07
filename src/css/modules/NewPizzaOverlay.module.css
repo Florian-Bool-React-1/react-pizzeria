@@ -16,7 +16,7 @@
 .panelOverlay {
   animation: panelOverlay .5s ease-in-out forwards;
 
-  @apply w-1/2 bg-white absolute right-0 top-0 bottom-0 px-8 py-8 flex flex-col;
+  @apply w-1/2 bg-white absolute right-0 top-0 bottom-0 px-8 py-8 flex flex-col overflow-auto;
 }
 
 @keyframes newPizzaOverlay {
