@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 function FooterLink({ href, children }) {
-  return (<a href={href} className="text-white text-sm border-b border-transparent hover:border-white duration-300 transition-all">
+  return (<Link to={href} className="text-white text-sm border-b border-transparent hover:border-white duration-300 transition-all">
     {children}
-  </a>);
+  </Link>);
 }
 
 export default function TheFooter() {
@@ -11,7 +13,7 @@ export default function TheFooter() {
       <div className="container mx-auto px-4 pb-12 flex">
 
         <div className="bg-white py-12 rounded-lg text-center w-1/3">
-          <img src="logo.jpg" alt="" className="inline-block mb-4" />
+          <img src="/logo.jpg" alt="" className="inline-block mb-4" />
 
           <div className="italic text-base">
             Se non ci vieni sei ignurante!
@@ -21,9 +23,9 @@ export default function TheFooter() {
         <div className="w-1/3 px-4 lg:px-10">
           <h3 className="font-bold text-white text-xl border-b pb-2 mb-4">Link</h3>
           <ul className="">
-            <li><FooterLink href="#">Home</FooterLink></li>
-            <li><FooterLink href="#">Menu</FooterLink></li>
-            <li><FooterLink href="#">Contatti</FooterLink></li>
+            <li><FooterLink href="/">Home</FooterLink></li>
+            <li><FooterLink href="/menu">Menu</FooterLink></li>
+            <li><FooterLink href="/contatti">Contatti</FooterLink></li>
           </ul>
         </div>
 

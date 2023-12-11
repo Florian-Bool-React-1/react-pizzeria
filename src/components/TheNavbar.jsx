@@ -1,7 +1,9 @@
+import { NavLink } from "react-router-dom";
+
 function NavbarLink({ href, children }) {
-  return (<a href={href ?? '#'} className="block py-3 px-4 min-w-[80px] text-center rounded-md transition-all duration-300 hover:bg-gray-100 hover:text-primary">
+  return (<NavLink to={href} className="block py-3 px-4 min-w-[80px] text-center rounded-md transition-all duration-300 hover:bg-gray-100 hover:text-primary">
     {children}
-  </a>);
+  </NavLink>);
 }
 
 export default function Navbar() {
@@ -10,14 +12,14 @@ export default function Navbar() {
       <nav className="py-4">
         <div className="container px-4 mx-auto flex items-center justify-between">
           <div>
-            <img src="logo.jpg" alt="Logo of Ristoria Pizzorante" className="h-11" />
+            <img src="/logo.jpg" alt="Logo of Ristoria Pizzorante" className="h-11" />
           </div>
 
           <div>
             <ul className="flex">
-              <li><NavbarLink>Home</NavbarLink></li>
-              <li><NavbarLink>Menu</NavbarLink></li>
-              <li><NavbarLink>Contatti</NavbarLink></li>
+              <li><NavbarLink href="/">Home</NavbarLink></li>
+              <li><NavbarLink href="/menu">Menu</NavbarLink></li>
+              <li><NavbarLink href="/contatti">Contatti</NavbarLink></li>
             </ul>
           </div>
         </div>

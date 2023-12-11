@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export function PizzasList({ onEditPizza }) {
   let initiated = false;
@@ -72,10 +73,15 @@ function PizzaSection({ pizza, reverse, handleEditClick }) {
           {/* ingredienti */}
           <p className="text-gray-500 text-sm ">{pizza.ingredienti.length ? pizza.ingredienti.map(ingredient => <span key={ingredient.id} className="px-2">{ingredient.name}</span>) : 'Ingredienti non disponibili'}</p>
 
-          <button className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'
-            onClick={() => handleEditClick(pizza.id)}>
-            Modifica
-          </button>
+          <div className="flex gap-4">
+            <Link to={'/pizze/' + pizza.id} className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'>
+              Visualizza
+            </Link>
+            <button className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'
+              onClick={() => handleEditClick(pizza.id)}>
+              Modifica
+            </button>
+          </div>
         </div>
       </div>
     </>

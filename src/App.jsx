@@ -1,47 +1,24 @@
-import { useEffect, useState } from "react";
-import FabButton from "./components/FabButton";
-import { NewPizzaOverlay } from "./components/NewPizzaOverlay";
-import { PizzasList } from "./components/PizzasList";
-import TheFooter from "./components/TheFooter";
-import TheNavbar from "./components/TheNavbar";
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Menu from "./pages/Menu";
+import Contatti from "./pages/Contatti";
+import PizzeShow from "./pages/pizze/Show";
+import DefaultLayout from "./pages/DefaultLayout";
 
 function App() {
-  const [showNewPizzaOverlay, setShowNewPizzaOverlay] = useState(false);
-  const [overlayData, setOverlayData] = useState(null);
 
-  // tolgo overflow dal body quando overlay è aperto
-  useEffect(() => {
-    // Devo togliere l'overflow dal body quando l'overlay è aperto
-    document.body.classList.toggle('overflow-hidden', showNewPizzaOverlay);
-    document.body.classList.toggle('pr-4', showNewPizzaOverlay);
-
-    // Se il modale è stato chiuso, va resettato il overlayData
-    if(!showNewPizzaOverlay) {
-      setOverlayData(null);
-    }
-  }, [showNewPizzaOverlay]);
-
-  function openEditOverlay(pizzaData){
-    setOverlayData(pizzaData);
-    setShowNewPizzaOverlay(true)
-  }
-
-  return (
-    <>
-      <TheNavbar></TheNavbar>
-
-      <main className="min-h-[50vh]">
-        <PizzasList onEditPizza={openEditOverlay}></PizzasList>
-      </main>
-
-      <TheFooter></TheFooter>
-
-      <FabButton onClick={() => setShowNewPizzaOverlay(true)}><PlusIcon className="group-hover:rotate-180 group-hover:scale-125 duration-500"></PlusIcon></FabButton>
-
-      <NewPizzaOverlay show={showNewPizzaOverlay} data={overlayData} onClose={() => setShowNewPizzaOverlay(false)}></NewPizzaOverlay>
-    </>
-  );
+return (
+  <BrowserRouter>
+    <Routes>
+      <Route element={<DefaultLayout />}>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/menu" element={<Menu />}></Route>
+        <Route path="/contatti" element={<Contatti />}></Route>
+        <Route path="/pizze/:id" element={<PizzeShow />}></Route>
+      </Route>
+    </Routes>
+  </BrowserRouter>
+);
 }
 
 export default App;

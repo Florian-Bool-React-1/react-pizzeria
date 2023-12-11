@@ -5,3 +5,7 @@
 body {
   min-height: 200vh;
 }
+
+nav a.active {
+  border-bottom: 1px solid red;
+}
