@@ -14,14 +14,23 @@ const initialFormData = {
 
 
 
-export function NewPizzaOverlay({ show, onClose }) {
+export function NewPizzaOverlay({ show, data, onClose }) {
   const inputClasses = "w-full border-2 border-gray-300 rounded-lg px-4 py-2 transition-colors focus:outline-none focus:border-primary";
   const [closing, setClosing] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const [ingredientsList, setIngredientsList] = useState([]);
 
+  // Ascolto quando data cambia e aggiorno il formData
+  useEffect(() => {
+    if (data) {
+      setFormData({ ...data });
+    }
+  }, [data]);
+
   function handleClose() {
     setClosing(true);
+    // resetto il formData ad ogni chiusura nel overlay
+    setFormData(initialFormData);
 
     setTimeout(() => {
       onClose();
@@ -34,6 +43,15 @@ export function NewPizzaOverlay({ show, onClose }) {
     const checked = e.target.checked;
 
     let newValue = e.target.type === 'checkbox' ? checked : value;
+
+    /*
+    Quando gestiamo un input di tipo file, il valore che dobbiamo salvare non è il value, 
+    ma i singoli file scelti che troviamo dentro la proprietà "files" dell'input
+    */
+    if (e.target.type === 'file') {
+      // prendo il primo file selezionato che è un istanza della classe File.
+      newValue = e.target.files[0];
+    }
 
     // controllo se sto assegnando il valore alla proprietà ingredients
     // se si, devo gestire il valore come se fosse un array
@@ -66,20 +84,45 @@ export function NewPizzaOverlay({ show, onClose }) {
   async function handleFormSubmit(e) {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3005/pizzas/", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
+    /*
+    Quando vogliamo eseguire l'upload di un file in JS,
+    dobbiamo usare un oggetto di tipo FormData
+    al quale, tramite il metodo append, passiamo i dati da inviare
+    */
+    const formDataToSend = new FormData();
+
+    // formDataToSend.append("image", formData.image);
+    // formDataToSend.append("name", formData.name);
+
+    // Ottengo un array di tutte le chiavi dell'oggetto formData
+    // prendo ogni chiave dell'oggetto collegato al form e la appendo all'oggetto formDataToSend con il relativo valore
+    Object.keys(formData).forEach(key => {
+      formDataToSend.append(key, formData[key]);
     });
 
-    handleClose()
+    const editMode = !!data;
+
+    const response = await fetch("http://localhost:3005/pizzas/" + (editMode && data.id), {
+      method: editMode ? "put" : "post",
+      headers: {
+        // Quando il body è un istanza di FormData, non dobbiamo specificare il content type
+        // "Content-Type": "multipart/form-data"
+      },
+      // body: JSON.stringify(formData)
+      // nel caso di upload di file, passiamo nel body tutto l'oggetto FormData insieme al content type multipart/form-data
+      body: formDataToSend
+    });
+
+    handleClose();
   }
 
   useEffect(() => {
     fetchIngredients();
   }, []);
+
+  function getImagePreview() {
+    return formData.image ? URL.createObjectURL(formData.image) : formData.dettaglio?.image;
+  }
 
   if (!show) return null;
 
@@ -114,7 +157,8 @@ export function NewPizzaOverlay({ show, onClose }) {
         </div>
         <div className='mb-4'>
           <label htmlFor="image_input">Immagine</label>
-          <input type="text" value={formData.image} onChange={e => handleInputChange(e, "image")} id="image_input" className={inputClasses} />
+          <input type="file" accept='image/*' onChange={e => handleInputChange(e, "image")} id="image_input" className={inputClasses} />
+          <img src={getImagePreview()} alt="" className='w-32 h-32 object-cover' />
         </div>
         <div className='mb-4'>
           <label>Ingredienti</label>
