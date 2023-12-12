@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  min-height: 200vh;
+  /* min-height: 200vh; */
 }
 
 nav a.active {

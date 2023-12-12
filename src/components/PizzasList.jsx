@@ -1,15 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { GlobalContext } from "../App";
+import { usePizze } from "../contexts/PizzeContext";
 
 export function PizzasList({ onEditPizza }) {
   let initiated = false;
-  const [pizzasList, setPizzasList] = useState([]);
-
-  async function fetchData() {
-    const jsonData = await (await fetch('http://localhost:3005/pizzas')).json();
-
-    setPizzasList(jsonData.data);
-  }
+  const {loading, counter, setLoading, setCounter} = useContext(GlobalContext);
+  const {pizzasList, fetchData} = usePizze()
 
   async function handleEditClick(id) {
     const pizzaData = await (await (fetch('http://localhost:3005/pizzas/' + id))).json();
@@ -31,9 +28,9 @@ export function PizzasList({ onEditPizza }) {
 
   return (
     <>
-      <section className="py-8">
+      <section className={'py-8 ' + (loading ? 'opacity-10' : '') }>
         <div className="container px-4 mx-auto">
-          <h1 className="text-6xl text-center mb-8">Benvenuti!</h1>
+          <h1 className="text-6xl text-center mb-8">Benvenuti! Valore count globale: {counter}</h1>
 
           {pizzasList.map((pizza, index) => <PizzaSection key={pizza.id} pizza={pizza} reverse={index % 2 !== 0} handleEditClick={handleEditClick}></PizzaSection>)}
 

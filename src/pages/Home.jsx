@@ -5,6 +5,7 @@ import { PizzasList } from "../components/PizzasList";
 import TheFooter from "../components/TheFooter";
 import TheNavbar from "../components/TheNavbar";
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { PizzeProvider } from "../contexts/PizzeContext";
 
 export default function Home() {
   const [showNewPizzaOverlay, setShowNewPizzaOverlay] = useState(false);
@@ -28,12 +29,12 @@ export default function Home() {
   }
 
   return (
-    <>
+    <PizzeProvider>
       <PizzasList onEditPizza={openEditOverlay}></PizzasList>
 
       <FabButton onClick={() => setShowNewPizzaOverlay(true)}><PlusIcon className="group-hover:rotate-180 group-hover:scale-125 duration-500"></PlusIcon></FabButton>
 
       <NewPizzaOverlay show={showNewPizzaOverlay} data={overlayData} onClose={() => setShowNewPizzaOverlay(false)}></NewPizzaOverlay>
-    </>
+    </PizzeProvider>
   );
 }
