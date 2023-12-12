@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles from '../css/modules/NewPizzaOverlay.module.css';
 
 const initialFormData = {
-  name: 'asdasd',
+  name: '',
   description: '',
   price: 0,
   vegan: false,
@@ -11,8 +11,6 @@ const initialFormData = {
   image: '',
   ingredients: []
 };
-
-
 
 export function NewPizzaOverlay({ show, data, onClose }) {
   const inputClasses = "w-full border-2 border-gray-300 rounded-lg px-4 py-2 transition-colors focus:outline-none focus:border-primary";
@@ -23,7 +21,16 @@ export function NewPizzaOverlay({ show, data, onClose }) {
   // Ascolto quando data cambia e aggiorno il formData
   useEffect(() => {
     if (data) {
-      setFormData({ ...data });
+      setFormData({
+        name: data.name,
+        description: data.dettaglio?.descrizione ?? '',
+        price: data.price,
+        vegan: data.vegan,
+        glutenFree: data.glutenFree,
+        available: data.available,
+        image: data.dettaglio?.image ?? '',
+        ingredients: data.ingredients
+      });
     }
   }, [data]);
 
@@ -102,7 +109,7 @@ export function NewPizzaOverlay({ show, data, onClose }) {
 
     const editMode = !!data;
 
-    const response = await fetch("http://localhost:3005/pizzas/" + (editMode && data.id), {
+    const response = await fetch("http://localhost:3005/pizzas/" + (editMode ? data.id : ''), {
       method: editMode ? "put" : "post",
       headers: {
         // Quando il body è un istanza di FormData, non dobbiamo specificare il content type
@@ -113,7 +120,11 @@ export function NewPizzaOverlay({ show, data, onClose }) {
       body: formDataToSend
     });
 
-    handleClose();
+    if (!response.ok) {
+      alert("Errore durante l'invio dei dati: " + await response.text());
+    } else {
+      handleClose();
+    }
   }
 
   useEffect(() => {
@@ -121,7 +132,7 @@ export function NewPizzaOverlay({ show, data, onClose }) {
   }, []);
 
   function getImagePreview() {
-    return formData.image ? URL.createObjectURL(formData.image) : formData.dettaglio?.image;
+    return typeof formData.image !== 'string' ? URL.createObjectURL(formData.image) : formData.image;
   }
 
   if (!show) return null;
@@ -144,30 +155,31 @@ export function NewPizzaOverlay({ show, data, onClose }) {
           <input type="text" value={formData.price} onChange={e => handleInputChange(e, "price")} id="price_input" className={inputClasses} />
         </div>
         <div className='mb-4'>
-          <label htmlFor="vegan_input">Vegana</label>
-          <input type="checkbox" value={formData.vegan} onChange={e => handleInputChange(e, "vegan")} id="vegan_input" className={inputClasses} />
+          <input type="checkbox" checked={formData.vegan} onChange={e => handleInputChange(e, "vegan")} id="vegan_input" className={''} />
+          <label htmlFor="vegan_input" className='ml-2'>Vegana</label>
         </div>
         <div className='mb-4'>
-          <label htmlFor="glutenFree_input">Senza glutine</label>
-          <input type="checkbox" value={formData.glutenFree} onChange={e => handleInputChange(e, "glutenFree")} id="glutenFree_input" className={inputClasses} />
+          <input type="checkbox" checked={formData.glutenFree} onChange={e => handleInputChange(e, "glutenFree")} id="glutenFree_input" className={''} />
+          <label htmlFor="glutenFree_input" className='ml-2'>Senza glutine</label>
         </div>
         <div className='mb-4'>
-          <label htmlFor="available_input">Disponibile</label>
-          <input type="checkbox" value={formData.available} onChange={e => handleInputChange(e, "available")} id="available_input" className={inputClasses} />
+          <input type="checkbox" checked={formData.available} onChange={e => handleInputChange(e, "available")} id="available_input" className={''} />
+          <label htmlFor="available_input" className='ml-2'>Disponibile</label>
         </div>
         <div className='mb-4'>
-          <label htmlFor="image_input">Immagine</label>
-          <input type="file" accept='image/*' onChange={e => handleInputChange(e, "image")} id="image_input" className={inputClasses} />
-          <img src={getImagePreview()} alt="" className='w-32 h-32 object-cover' />
+          <label htmlFor="image_input" className='mb-1 block'>Immagine</label>
+          <input type="file" accept='image/*' onChange={e => handleInputChange(e, "image")} id="image_input" />
+          {getImagePreview() && <img src={getImagePreview()} alt="" className='w-32 h-32 object-cover' />}
         </div>
         <div className='mb-4'>
           <label>Ingredienti</label>
 
-          <div className='flex gap-3 flex-wrap'>
+          <div className='flex gap-4 flex-wrap'>
             {ingredientsList.map(ingredient => {
               return <label key={ingredient.id}>
-                <input type="checkbox" value={ingredient.id} onChange={e => handleInputChange(e, "ingredients")} id="ingredients_input" />
-                {ingredient.name}
+                <input type="checkbox" value={ingredient.id} onChange={e => handleInputChange(e, "ingredients")}
+                  id="ingredients_input" checked={ingredientsList.find(i => i.id === ingredient.id)} />
+                <span className='ml-1'>{ingredient.name}</span>
               </label>;
             })}
           </div>
