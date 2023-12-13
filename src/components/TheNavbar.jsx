@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../App";
 import { useCompany } from "../contexts/CompanyContext";
 import { useAuth } from "../contexts/AuthContext";
+import UserDropdown from "./UserDropdown";
 
 function NavbarLink({ href, onClick, children }) {
   return (<NavLink to={href} onClick={onClick} className="block py-3 px-4 min-w-[80px] text-center rounded-md transition-all duration-300 hover:bg-gray-100 hover:text-primary">
@@ -27,10 +28,7 @@ export default function Navbar() {
           <div>
             <ul className="flex">
               {menu.map((el, i) => <li key={i} ><NavbarLink href={el.url}>{el.label}</NavbarLink></li>)}
-              {/* <li><NavbarLink href="/menu">Menu</NavbarLink></li>
-              <li><NavbarLink href="/contatti">Contatti</NavbarLink></li>
-              <li><button onClick={() => setCounter(c => c + 1)}>incrementa: {counter}</button></li> */}
-              {isLogged ? <li><NavbarLink onClick={handleLogout}>Logout</NavbarLink></li> : null}
+              {isLogged ? <UserDropdown /> : null}
             </ul>
           </div>
         </div>

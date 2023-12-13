@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate, useNavigation } from "react-router-dom";
 import { handleInputChange } from "../utils/handleInputChange";
 import { useAuth } from "../contexts/AuthContext";
+import fetchApi from "../utils/fetchApi";
 
 export default function Register() {
   const navigate = useNavigate();
-  const {handleLoginOrRegistration} = useAuth();
+  const { handleLoginOrRegistration } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -17,17 +18,9 @@ export default function Register() {
     e.preventDefault();
 
     // chiamata api che invia i dati di login al server e ne riceve la risposta.
-    const resp = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          token: "def123",
-          user: {
-            name: formData.name,
-            surname: formData.surname,
-            email: formData.email,
-          }
-        });
-      }, 2000);
+    const resp = await fetchApi("/register", "POST", {
+      ...formData,
+      name: formData.name + " " + formData.surname
     });
 
     // salvo i dati nel AuthContext

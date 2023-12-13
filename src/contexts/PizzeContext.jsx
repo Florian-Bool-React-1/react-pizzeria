@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import fetchApi from "../utils/fetchApi";
 
 // creazione dell context
 const PizzeContext = createContext();
@@ -8,7 +9,7 @@ export function PizzeProvider({ children }) {
   const [pizzasList, setPizzasList] = useState([]);
 
   async function fetchData() {
-    const jsonData = await (await fetch('http://localhost:3005/pizzas')).json();
+    const jsonData = await fetchApi('/pizzas');
 
     setPizzasList(jsonData.data);
   }

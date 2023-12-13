@@ -2,14 +2,16 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../App";
 import { usePizze } from "../contexts/PizzeContext";
+import fetchApi from "../utils/fetchApi";
+import RoleAccess from "../middlewares/RoleAccess";
 
 export function PizzasList({ onEditPizza }) {
   let initiated = false;
-  const {loading, counter, setLoading, setCounter} = useContext(GlobalContext);
-  const {pizzasList, fetchData} = usePizze()
+  const { loading, counter, setLoading, setCounter } = useContext(GlobalContext);
+  const { pizzasList, fetchData } = usePizze();
 
   async function handleEditClick(id) {
-    const pizzaData = await (await (fetch('http://localhost:3005/pizzas/' + id))).json();
+    const pizzaData = await fetchApi('/pizzas/' + id);
 
     // apriamo l'overlay
     onEditPizza(pizzaData);
@@ -28,7 +30,7 @@ export function PizzasList({ onEditPizza }) {
 
   return (
     <>
-      <section className={'py-8 ' + (loading ? 'opacity-10' : '') }>
+      <section className={'py-8 ' + (loading ? 'opacity-10' : '')}>
         <div className="container px-4 mx-auto">
           <h1 className="text-6xl text-center mb-8">Benvenuti! Valore count globale: {counter}</h1>
 
@@ -74,10 +76,13 @@ function PizzaSection({ pizza, reverse, handleEditClick }) {
             <Link to={'/pizze/' + pizza.id} className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'>
               Visualizza
             </Link>
-            <button className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'
-              onClick={() => handleEditClick(pizza.id)}>
-              Modifica
-            </button>
+
+            <RoleAccess roles={['admin']}>
+              <button className='w-full bg-blue-500 hover:bg-blue-800 px-8 py-4 rounded-lg text-white transition-colors'
+                onClick={() => handleEditClick(pizza.id)}>
+                Modifica
+              </button>
+            </RoleAccess>
           </div>
         </div>
       </div>
