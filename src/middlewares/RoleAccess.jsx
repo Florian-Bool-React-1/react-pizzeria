@@ -1,7 +1,6 @@
 import { useAuth } from "../contexts/AuthContext";
 
 /**
- * 
  * @param {{roles: string[]}} param
  */
 export default function RoleAccess({ roles, children }) {

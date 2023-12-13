@@ -21,6 +21,7 @@ export default function Home() {
     if (!showNewPizzaOverlay) {
       setOverlayData(null);
     }
+
   }, [showNewPizzaOverlay]);
 
   function openEditOverlay(pizzaData) {
